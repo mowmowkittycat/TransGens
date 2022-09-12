@@ -1,0 +1,35 @@
+{
+  "gen.error.maxGenLevel.title": "<ccolor:error><bold>ERROR",
+  "gen.error.maxGenLevel.subtitle": "<ccolor:gray>Max Generator Level",
+  "gen.error.maxGenSlots.title": "<ccolor:error><bold>ERROR",
+  "gen.error.maxGenSlots.subtitle": "<ccolor:gray>Max Gen Slots ($1/$1)",
+  "gen.error.poor.title": "<ccolor:error><bold>ERROR",
+  "gen.error.poor.subtitle": "<ccolor:gray>Insufficient Funds ($$1/$$2)",
+
+  "gen.error.sneak.title": "<ccolor:error><bold>ERROR",
+  "gen.error.sneak.subtitle": "<ccolor:gray>Sneak to break generator",
+
+  "gen.message.breakGen.title": "<ccolor:error><bold>GEN BROKEN",
+  "gen.message.breakGen.subtitle": "<ccolor:gray>($1/$2)",
+
+  "gen.message.placeGen.title": "<ccolor:green><bold>GEN PLACED",
+  "gen.message.placeGen.subtitle": "<ccolor:gray>($1/$2)",
+
+  "gen.message.upgradeGen.title": "<ccolor:green><bold>GEN UPGRADED",
+  "gen.message.upgradeGen.subtitle": "<ccolor:gray>$1 \u2192 $2",
+
+
+  "command.error.permission": "<ccolor:error>You don't have permission for this command",
+  "command.error.existence": "<ccolor:error>The Argument \"$1\" does not exist",
+  "command.error.gen.existence": "<ccolor:error>The generator \"$1\" does not exist",
+  "command.error.gen.null": "<ccolor:error>Please specify a generator",
+  "command.erorr.player.existence": "<ccolor:error>The player \"$1\" does not exist",
+  "command.error.usage": "<ccolor:error>Usage: $1",
+  "command.slots.amount": "<ccolor:main><bold>TG</bold> <ccolor:white>$1 has $2 gen slots",
+
+  "command.sell.success": "<ccolor:main><dash/>\n\n<ccolor:main><bold>SELL</bold>\n<ccolor:gray> - <ccolor:white>Sold items for $1 \n\n<ccolor:main><dash/>",
+  "command.sell.success.title": "<ccolor:main><bold>SOLD",
+  "command.sell.success.subtitle": "<ccolor:gray>Sold all items for $1",
+
+  "command.reload": "<ccolor:main><bold>TG</bold> config reload in $1 ms"
+}
