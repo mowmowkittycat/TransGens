@@ -51,6 +51,19 @@ class DataStore {
 
     }
 
+
+    inline fun <reified T> configGet(element: String): T {
+        var item = config.get(element)
+        if (item !is T) {
+            if (item != null) {
+                throw TypeCastException("Config Element '$element' is not set properly (${item.`class`})")
+            } else {
+                throw NullPointerException("Config Element '$element' is not defined")
+            }
+        }
+        return item
+    }
+
     fun DataInitialization() {
         dataFolder.mkdir()
         if (!genFile.exists()) {

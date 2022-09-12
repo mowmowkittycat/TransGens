@@ -9,9 +9,11 @@ A super customizable Minehut styled generator plugin
 - Vault Economy Manager
 
 ## Features
-- Generators
-- Customizable GenList GUI
+- Generators (duh)
+- Configs for basically everything
+- Customizable Genlist GUI
 - Customizable Sounds and Language
+- MiniMessage API for handling everything Text based
 - PlaceholderAPI Values
 
 

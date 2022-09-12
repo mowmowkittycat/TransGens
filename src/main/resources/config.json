@@ -1,5 +1,8 @@
 {
   "config_version": "1.0.0-BETA",
-  "sell_command_enabled": true
+  "sell_command_enabled": true,
+  "generator_cooldown": 5,
+  "generator_waitPer10": true,
+  "default_genslots": 25
 
 }
