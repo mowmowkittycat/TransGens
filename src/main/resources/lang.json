@@ -31,5 +31,12 @@
   "command.sell.success.title": "<ccolor:main><bold>SOLD",
   "command.sell.success.subtitle": "<ccolor:gray>Sold all items for $1",
 
-  "command.reload": "<ccolor:main><bold>TG</bold> config reload in $1 ms"
+  "command.reload": "<ccolor:main><bold>TG</bold> config reload in $1 ms",
+
+
+  "gui.genlist.generatorName": "$1 <ccolor:gray>| <ccolor:white>$2",
+
+  "gui.genlist.generatorLore": "\n <ccolor:gray>Info:\n<ccolor:gray>- <ccolor:white>Sells for <ccolor:main>$1\n<ccolor:gray>- <ccolor:white>Upgrades to <ccolor:main>$2\n<ccolor:gray>- <ccolor:white>Upgrade Cost <ccolor:main>$3"
+
+
 }

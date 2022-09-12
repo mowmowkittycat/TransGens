@@ -112,7 +112,7 @@ class TransmitGenerators : JavaPlugin() {
                 val bukkitCommandMap: Field = Bukkit.getServer().javaClass.getDeclaredField("commandMap")
                 bukkitCommandMap.setAccessible(true)
                 var commandMap = bukkitCommandMap.get(Bukkit.getServer()) as CommandMap
-                commandMap.register("sell", SellCommand())
+                commandMap.register("TransmitGenerators", SellCommand())
             } catch (e: Exception) {
                 e.printStackTrace()
             }

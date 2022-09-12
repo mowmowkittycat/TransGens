@@ -3,14 +3,18 @@ package mc.warp.transmitgenerators.guis
 import com.github.stefvanschie.inventoryframework.gui.GuiItem
 import com.github.stefvanschie.inventoryframework.gui.type.ChestGui
 import com.github.stefvanschie.inventoryframework.pane.PaginatedPane
+import de.tr7zw.nbtapi.NBTContainer
+import de.tr7zw.nbtapi.NBTItem
 import mc.warp.transmitgenerators.TransmitGenerators
+import mc.warp.transmitgenerators.utils.Format
 import mc.warp.transmitgenerators.utils.Messages
-import org.bukkit.Material
+import mc.warp.transmitgenerators.utils.Messages.getLangMessage
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.bukkit.entity.HumanEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryClickEvent
-import org.bukkit.inventory.ItemStack
 import java.io.File
+import java.util.*
 
 
 class GenList {
@@ -36,13 +40,41 @@ class GenList {
                this.title = gui.title
                gui.title = title + " (" + page.page + ") "
 
+
+               var genNum = 1
+
                TransmitGenerators.getDataStore().getAllGenerators().forEach {
                    var key = it.key
                    var value = it.value
 
-                   var item = GuiItem(value.getBlock())
-                   genList.add(item)
+                   var item = value.getBlock()
 
+                   var meta = item.itemMeta
+
+                   var nbtItem = NBTItem(item)
+
+                   var display = NBTContainer("{Lore:[]}")
+                   var lore = TransmitGenerators.getDataStore().messages["gui.genlist.generatorLore"]!!
+                   var Objects = arrayListOf<String>(value.worth.toString(), value.upgrade, value.price.toString())
+                   var num = 1
+                   for (replacement in Objects) {
+                       lore = lore.replace("$${num}", replacement, true)
+                       num++
+                   }
+                   var loreList = lore.split("\n")
+                   var NBTlore = display.getStringList("Lore");
+                   var NBTname = display.setString("Name", GsonComponentSerializer.gson().serialize(getLangMessage("gui.genlist.generatorName", value.block.Name, genNum)!!))
+                   loreList.forEach {
+                       NBTlore.add(GsonComponentSerializer.gson().serialize(Format.formater.deserialize(it)))
+                   }
+                   var realDisplay = nbtItem.addCompound("display")
+                   realDisplay.mergeCompound(display)
+
+                   item = nbtItem.item
+
+                   genList.add(GuiItem(item))
+
+                   genNum += 1
                }
 
 
