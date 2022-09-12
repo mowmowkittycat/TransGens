@@ -15,6 +15,7 @@ A super customizable Minehut styled generator plugin
 - Customizable Sounds and Language
 - MiniMessage API for handling everything Text based
 - PlaceholderAPI Values
+- Sell Command ( can be disabled )
 
 
 ## Need Help?
