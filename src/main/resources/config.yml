@@ -1,0 +1,31 @@
+config-version: "1.2.0-BETA"
+sell-command: true
+generator-cooldown: 5
+generator-waitPer10: true
+default-genslots: 25
+generator-boilerplate-name: true
+generator-boilerplate-lore: true
+drops-boilerplate-name: true
+drops-boilerplate-lore: true
+autosave-frequency: 5
+starter-gen: "dirt"
+
+
+
+database:
+
+  # Type of the storage database
+  # Default - Uses local machine and json files to store data
+  # MongoDB - Uses a Mongo Database to store json and data
+  type: "default"
+
+  # For MongoDB Use
+  # The Connection URI for MongoDB
+  database-uri: ""
+
+  # The name of the database to store data in
+  database-name: ""
+
+  # For MongoDB Use
+  # The Name of the Collection that is used to store player data
+  collection-name: ""

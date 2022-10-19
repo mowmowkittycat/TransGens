@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chestgui title="All Generators" rows="6">
+    <paginatedpane x="0" y="0" length="9" height="5">
+        <!-- Where The Generators will Appear -->
+    </paginatedpane>
+    <outlinepane x="0" y="5" length="9" height="1" priority="lowest" repeat="true">
+        <item id="black_stained_glass_pane">
+            <displayname> </displayname>
+        </item>
+    </outlinepane>
+    <staticpane x="0" y="5" length="9" height="1">
+        <item id="player_head" x="1" y="0" onClick="goBackClick">
+            <skull owner="MHF_arrowleft"/>
+            <displayname>§x§5§4§8§E§E§B§lGO BACK</displayname>
+            <lore>
+                <line> </line>
+                <line>§x§5§4§8§E§E§B§lCLICK §x§5§4§8§E§E§BGo Back</line>
+                <line>§x§9§5§A§6§B§C - §x§f§a§f§c§f§fGo back a page</line>
+                <line> </line>
+            </lore>
+        </item>
+        <item id="player_head" x="7" y="0" onClick="nextPageClick">
+            <skull owner="MHF_arrowright"/>
+            <displayname>§x§5§4§8§E§E§B§lNEXT PAGE</displayname>
+            <lore>
+                <line> </line>
+                <line>§x§5§4§8§E§E§B§lCLICK §x§5§4§8§E§E§BNext Page</line>
+                <line>§x§9§5§A§6§B§C - §x§f§a§f§c§f§fSee more Generators</line>
+                <line> </line>
+            </lore>
+        </item>
+    </staticpane>
+</chestgui>

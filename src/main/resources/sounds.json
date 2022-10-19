@@ -1,0 +1,48 @@
+{
+  "gen.error.maxGenLevel": {
+    "sound": "entity.enderman.death",
+    "volume": 0.7,
+    "pitch": 2
+  },
+  "gen.error.maxGenSlot": {
+    "sound": "entity.enderman.death",
+    "volume": 0.7,
+    "pitch": 2
+  },
+  "gen.error.poor": {
+    "sound": "entity.enderman.death",
+    "volume": 0.7,
+    "pitch": 2
+  },
+  "gen.error.sneak": {
+    "sound": "entity.enderman.death",
+    "volume": 0.7,
+    "pitch": 2
+  },
+  "gen.sound.breakGen": {
+    "sound": "entity.item.pickup",
+    "volume": 1,
+    "pitch": 0.2
+  },
+  "gen.sound.placeGen": {
+    "sound": "block.note_block.xylophone",
+    "volume": 1,
+    "pitch": 1.5
+  },
+  "gen.sound.upgradeGen": {
+    "sound": "block.note_block.chime",
+    "volume": 1,
+    "pitch": 2
+  },
+
+  "command.error": {
+    "sound": "entity.enderman.death",
+    "volume": 0.7,
+    "pitch": 2
+  },
+  "command.success": {
+    "sound": "entity.player.levelup",
+    "volume": 1,
+    "pitch": 2
+  }
+}

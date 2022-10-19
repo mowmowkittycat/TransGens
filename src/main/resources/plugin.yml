@@ -1,0 +1,11 @@
+name: TransmitGenerators
+version: '${project.version}'
+main: mc.warp.transmitgenerators.TransmitGenerators
+api-version: 1.17
+authors: [ MrEnxo ]
+description: A Minehut Style Generator Plugin created by MrEnxo (Open-Source)
+depend: [ Vault ]
+softdepend: [ PlaceholderAPI ]
+commands:
+  TransmitGen:
+    aliases: tg
