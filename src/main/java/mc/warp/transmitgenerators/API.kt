@@ -1,6 +1,9 @@
 package mc.warp.transmitgenerators
 
 import mc.warp.transmitgenerators.TransmitGenerators.Companion.getDataStore
+import mc.warp.transmitgenerators.type.WarpPlayer
+import org.bukkit.Location
+import org.bukkit.OfflinePlayer
 import org.bukkit.inventory.ItemStack
 
 class API {
@@ -32,6 +35,29 @@ class API {
             TransmitGenerators.genList.size
 
             return TransmitGenerators.genList
+        }
+
+
+
+        @JvmStatic
+        fun getPlayerData(player: OfflinePlayer): WarpPlayer {
+            return TransmitGenerators.getDataStore().getPlayer(player)!!
+        }
+
+
+        @JvmStatic
+        fun getGeneratorLocationsList(player: WarpPlayer): ArrayList<Location> {
+            val locations = ArrayList<Location>();
+            player.placedGens.forEach {
+                locations.addAll(it.value);
+            }
+
+            return locations;
+        }
+
+        @JvmStatic
+        fun getGeneratorLocations(player: WarpPlayer): HashMap<String, ArrayList<Location>> {
+            return player.placedGens;
         }
 
         @JvmStatic
