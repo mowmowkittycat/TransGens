@@ -26,7 +26,7 @@ import java.util.*
 import java.util.stream.Collectors
 
 
-class DataStore {
+class DataStore() {
 
     var playerList = HashMap<UUID, WarpPlayer>()
 
@@ -47,15 +47,14 @@ class DataStore {
     private var collection: MongoCollection<Document>? = null;
     var GSON: Gson;
 
-    constructor() {
+    init {
         GSON = GsonBuilder()
             .registerTypeAdapter(Location::class.java, LocationSerializer())
             .registerTypeAdapter(ItemStack::class.java, ItemStackSerializer())
             .registerTypeAdapter(Generator::class.java, GeneratorSerializer())
             .setPrettyPrinting()
             .disableHtmlEscaping()
-            .create();
-
+            .create()
     }
 
 
@@ -152,7 +151,7 @@ class DataStore {
 
     fun loadPlayer(player: OfflinePlayer): WarpPlayer? {
         var databaseType = this.config.getConfigurationSection("database")!!.getString("type")
-        if (databaseType.equals("database", true)) {
+        if (databaseType.equals("default", true)) {
             var saveFile = File(playerFolder.absolutePath + "/${player.uniqueId}.json")
 
 
@@ -196,7 +195,7 @@ class DataStore {
 
     fun saveWarpPlayer(player: WarpPlayer) {
         var databaseType = this.config.getConfigurationSection("database")!!.getString("type")
-        if (databaseType.equals("database", true)) {
+        if (databaseType.equals("default", true)) {
             var saveFile = File(playerFolder.absolutePath + "/${player.UUID}.json")
 
             if (!saveFile.exists()) {

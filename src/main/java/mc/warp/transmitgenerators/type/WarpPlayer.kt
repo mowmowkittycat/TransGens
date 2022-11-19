@@ -20,12 +20,14 @@ class WarpPlayer {
     @SerializedName("PlacedGens") var placedGenSlots: Int;
     @SerializedName("Gens") var placedGens: HashMap<String, ArrayList<Location>>
     @Transient var canUpgrade: Boolean = true;
+    @Transient var ephemeralBlocks: HashMap<Location, Boolean>;
 
     constructor(player: Player) {
         this.UUID = player.uniqueId
         this.maxGenSlots = getDataStore().config.getInt("default-genslots")
         this.placedGenSlots = 0
         this.placedGens = HashMap()
+        this.ephemeralBlocks = HashMap();
 
     }
 
@@ -49,13 +51,17 @@ class WarpPlayer {
                     }
                     var nbt = NBTBlock(loc.block)
                     if (nbt.data.getCompound("TransmitNBT") == null) {
-                        remove.getOrDefault(type.key, ArrayList()).add(loc)
-                        placedGenSlots--
+                        if (!player.ephemeralBlocks.containsKey(loc)) {
+                            remove.getOrDefault(type.key, ArrayList()).add(loc)
+                            placedGenSlots--
+                        }
+
 
                     }
                     var newloc = loc.clone().add(0.5,1.0,0.5)
                     loc.world.dropItem(newloc, genDrop).velocity = Vector(0.0,0.1,0.0)
                     genWait -= TransmitGenerators.genWait
+
                 }
             }
 
@@ -65,6 +71,7 @@ class WarpPlayer {
             }
 
             player.placedGens = copy;
+            player.ephemeralBlocks = HashMap();
         }
 
     }

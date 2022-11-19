@@ -135,6 +135,7 @@ class GenEvents: Listener {
             sendTitle(player, getLangMessage("gen.message.breakGen.title"),getLangMessage("gen.message.breakGen.subtitle", (playerData.placedGenSlots  - 1).toString(),playerData.maxGenSlots.toString()), 200L, 200L, 200L)
             gens.remove(block.location)
             player.inventory.addItem(generator.getBlock())
+            playerData.ephemeralBlocks.put(block.location, true);
             block.type = Material.AIR
 
             playerData.placedGenSlots--;

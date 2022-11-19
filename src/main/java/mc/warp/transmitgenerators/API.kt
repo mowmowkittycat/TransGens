@@ -46,9 +46,10 @@ class API {
 
 
         @JvmStatic
-        fun getGeneratorLocationsList(player: WarpPlayer): ArrayList<Location> {
+        fun getGeneratorLocationsList(player: OfflinePlayer): ArrayList<Location> {
+            val data = TransmitGenerators.getDataStore().getPlayer(player)!!
             val locations = ArrayList<Location>();
-            player.placedGens.forEach {
+            data.placedGens.forEach {
                 locations.addAll(it.value);
             }
 
@@ -56,8 +57,9 @@ class API {
         }
 
         @JvmStatic
-        fun getGeneratorLocations(player: WarpPlayer): HashMap<String, ArrayList<Location>> {
-            return player.placedGens;
+        fun getGeneratorLocations(player: OfflinePlayer): HashMap<String, ArrayList<Location>> {
+            val data = TransmitGenerators.getDataStore().getPlayer(player)!!
+            return data.placedGens;
         }
 
         @JvmStatic
