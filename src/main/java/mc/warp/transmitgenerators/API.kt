@@ -32,7 +32,6 @@ class API {
 
         @JvmStatic
         fun getGeneratorList(): ArrayList<Generator> {
-            TransmitGenerators.genList.size
 
             return TransmitGenerators.genList
         }
@@ -44,6 +43,20 @@ class API {
             return TransmitGenerators.getDataStore().getPlayer(player)!!
         }
 
+
+
+        @JvmStatic
+        fun getGeneratorGeneratorsList(player: OfflinePlayer): ArrayList<String> {
+            val data = TransmitGenerators.getDataStore().getPlayer(player)!!
+            val generators = ArrayList<String>();
+            data.placedGens.forEach {
+                for (location in it.value) {
+                    generators.add(it.key);
+                }
+
+            }
+            return generators
+        }
 
         @JvmStatic
         fun getGeneratorLocationsList(player: OfflinePlayer): ArrayList<Location> {
