@@ -10,6 +10,7 @@ import mc.warp.transmitgenerators.utils.scheduler.schedule
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.Bukkit
+import org.bukkit.Material
 import org.bukkit.command.CommandMap
 import org.bukkit.plugin.java.JavaPlugin
 import java.lang.reflect.Field
@@ -33,6 +34,7 @@ class TransmitGenerators : JavaPlugin() {
         lateinit var econ: Economy;
         var genWait: Int = 0;
         lateinit var genList: ArrayList<Generator>
+        var genBlockList: ArrayList<Material> = ArrayList()
     }
 
 
@@ -125,6 +127,9 @@ class TransmitGenerators : JavaPlugin() {
         }
 
         genList = generatorList
+        genList.forEach {
+            genBlockList.add(it.getBlock().type)
+        }
 
 
 

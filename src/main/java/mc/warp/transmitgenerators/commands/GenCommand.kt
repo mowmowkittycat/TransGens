@@ -82,6 +82,47 @@ class GenCommand : CommandExecutor {
                     playSound(player, "command.error")
                     return false
                 }
+
+                if (args[1].equals("set", ignoreCase = true)) {
+                    if (args.getOrNull(2) == null) {
+                        sendText(player, getLangMessage("command.error.usage", "/transmitgens slot set <number> <player>"))
+                        playSound(player, "command.error")
+                        return false
+                    }
+                    var num = Integer.parseInt(args.getOrNull(2))
+
+                    var data: WarpPlayer;
+                    var save = false;
+
+                    if (player is Player && args.getOrNull(3) == null) data = getDataStore().getPlayer(player)!!
+                    else if (args.getOrNull(3) != null) {
+
+                        var tempPlayer = Bukkit.getOfflinePlayer(args[3])
+                        if (tempPlayer == null) {
+                            sendText(player, getLangMessage("command.error.player.existence", args[3]))
+                            playSound(player, "command.error")
+                            return false
+                        }
+                        if (!tempPlayer.isOnline) {
+                            data = getDataStore().loadPlayer(tempPlayer)!!
+                            save = true
+                        } else {
+                            data = getDataStore().getPlayer(tempPlayer)!!
+                        }
+
+                    } else {
+                        sendText(player, getLangMessage("command.error.usage", "/transmitgens slot set <number> <player>"))
+                        playSound(player, "command.error")
+                        return false
+                    }
+
+                    data.maxGenSlots = num
+                    if (!save) getDataStore().setPlayer(Bukkit.getPlayer(data.UUID)!!, data)
+                    else getDataStore().saveWarpPlayer(data);
+
+                    return true
+                }
+
                 if (args[1].equals("add", ignoreCase = true) || args[1].equals("remove", ignoreCase = true)) {
 
                     if (args.getOrNull(2) == null) {
@@ -253,7 +294,7 @@ class GenTabCommand: TabCompleter {
                     Bukkit.getOnlinePlayers().forEach {
                         completions.add(it.name)
                     }
-                } else if (args.getOrNull(1).equals("add", ignoreCase = true) || args.getOrNull(1).equals("remove", ignoreCase = true)) {
+                } else {
                     if (args.getOrNull(3) != null) {
                         if (args.getOrNull(4) == null)  {
                             Bukkit.getOnlinePlayers().forEach {
@@ -271,6 +312,7 @@ class GenTabCommand: TabCompleter {
                 completions.add("add")
                 completions.add("remove")
                 completions.add("amount")
+                completions.add("set")
             }
 
         } else if (args.getOrNull(0).equals("reset", ignoreCase = true)) {

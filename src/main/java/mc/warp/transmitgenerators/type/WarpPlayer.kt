@@ -3,6 +3,7 @@ package mc.warp.transmitgenerators.type
 import com.google.gson.annotations.SerializedName
 import de.tr7zw.nbtapi.NBTBlock
 import mc.warp.transmitgenerators.TransmitGenerators
+import mc.warp.transmitgenerators.TransmitGenerators.Companion.genBlockList
 import mc.warp.transmitgenerators.TransmitGenerators.Companion.getDataStore
 import mc.warp.transmitgenerators.utils.scheduler.schedule
 import org.bukkit.Bukkit
@@ -35,29 +36,38 @@ class WarpPlayer {
     fun genDrop() {
         var player = this
         var genWait = 10
+        if (player.placedGenSlots < 0) player.placedGenSlots = 0;
         Bukkit.getScheduler().schedule(TransmitGenerators.getInstance()) {
             var copy = player.placedGens.clone() as HashMap<String, ArrayList<Location>>
             var remove = HashMap<String, ArrayList<Location>>()
             for (type in copy) {
                 var gen = getDataStore().getGenerator(type.key) ?: continue
                 var genDrop = gen.getDrop()
-                var genBlock = gen.getBlock()
+                val genBlock = gen.getBlock()
 
-                for (loc in type.value) {
+                val locs = type.value.clone() as ArrayList<Location>
+
+                for (loc in locs) {
                     if (!loc.isChunkLoaded) continue
                     if (genWait == 0) {
                         genWait = 10
                         waitFor(1)
                     }
                     var nbt = NBTBlock(loc.block)
-                    if (nbt.data.getCompound("TransmitNBT") == null) {
-                        if (!player.ephemeralBlocks.containsKey(loc)) {
-                            remove.getOrDefault(type.key, ArrayList()).add(loc)
-                            placedGenSlots--
+                    if (loc.block.type != genBlock.type) {
+                        if (!genBlockList.contains(loc.block.type)) {
+                            if (player.ephemeralBlocks != null) {
+                                if (!player.ephemeralBlocks.containsKey(loc)) {
+                                    remove.getOrDefault(type.key, ArrayList()).add(loc)
+                                    placedGenSlots--
+                                }
+                            }
+
+
+
                         }
-
-
                     }
+
                     var newloc = loc.clone().add(0.5,1.0,0.5)
                     loc.world.dropItem(newloc, genDrop).velocity = Vector(0.0,0.1,0.0)
                     genWait -= TransmitGenerators.genWait
@@ -66,7 +76,7 @@ class WarpPlayer {
             }
 
             for (type in remove) {
-                var array = copy.getOrDefault(type.key, ArrayList())
+                var array = player.placedGens.getOrDefault(type.key, ArrayList())
                 array.removeAll(type.value.toSet())
             }
 

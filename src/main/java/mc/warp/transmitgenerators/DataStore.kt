@@ -24,6 +24,7 @@ import java.io.*
 import java.nio.charset.StandardCharsets
 import java.util.*
 import java.util.stream.Collectors
+import kotlin.collections.HashMap
 
 
 class DataStore() {
@@ -191,6 +192,7 @@ class DataStore() {
         var playerData = TransmitGenerators.getDataStore().loadPlayer(player)
         TransmitGenerators.getDataStore().setPlayer(player, playerData!!);
         playerData.canUpgrade = true
+        playerData.ephemeralBlocks = HashMap()
     }
 
     fun saveWarpPlayer(player: WarpPlayer) {
