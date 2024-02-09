@@ -1,4 +1,4 @@
-# Transmit Generators
+# Trans Generators 🏳️‍⚧️
 A super customizable Minehut styled generator plugin
 
 **Keep in mind this plugin in is beta**
