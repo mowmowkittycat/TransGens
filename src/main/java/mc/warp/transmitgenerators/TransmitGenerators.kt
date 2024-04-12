@@ -1,5 +1,8 @@
 package mc.warp.transmitgenerators
 
+import com.idlegens.idlecore.IdleCore
+import com.idlegens.idlecore.stats.Stat
+import com.idlegens.idlecore.stats.StatManager.getStats
 import mc.warp.transmitgenerators.commands.GenCommand
 import mc.warp.transmitgenerators.commands.GenTabCommand
 import mc.warp.transmitgenerators.commands.SellCommand
@@ -7,8 +10,6 @@ import mc.warp.transmitgenerators.events.GenEvents
 import mc.warp.transmitgenerators.hooks.Placeholders
 import mc.warp.transmitgenerators.type.WarpPlayer
 import mc.warp.transmitgenerators.utils.scheduler.schedule
-import net.kyori.adventure.platform.bukkit.BukkitAudiences
-import net.milkbowl.vault.economy.Economy
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.command.CommandMap
@@ -16,6 +17,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import java.lang.reflect.Field
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.math.ceil
 
 
 class TransmitGenerators : JavaPlugin() {
@@ -30,8 +32,6 @@ class TransmitGenerators : JavaPlugin() {
             return dataStore
         }
 
-        lateinit var adventure: BukkitAudiences;
-        lateinit var econ: Economy;
         var genWait: Int = 0;
         lateinit var genList: ArrayList<Generator>
         var genBlockList: ArrayList<Material> = ArrayList()
@@ -49,20 +49,8 @@ class TransmitGenerators : JavaPlugin() {
         if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             Placeholders(this).register();
         }
-        if (Bukkit.getPluginManager().getPlugin("Vault") == null) {
-            disableDependency()
-            return;
-        }
 
-        var rsp = server.servicesManager.getRegistration( Economy::class.java )
-        if (rsp == null) {
-            disableDependency()
-            return;
-        }
-        econ = rsp.provider;
-
-        adventure = BukkitAudiences.create(this);
-        server.pluginManager.registerEvents(GenEvents(), this)
+        server.pluginManager.registerEvents(GenEvents, this)
         getCommand("TransmitGen")!!.setExecutor(GenCommand())
         getCommand("TransmitGen")!!.tabCompleter = GenTabCommand()
 
@@ -75,12 +63,21 @@ class TransmitGenerators : JavaPlugin() {
                 for (p in Bukkit.getOnlinePlayers()) {
                     var player = dataStore.playerList[p.uniqueId]
                     if (player != null) {
-                        player.genDrop()
-                        waitFor(1)
+                        if (player.genTicks <= 0) {
+                            player.genDrop()
+                            var baseSpeed = dataStore.config.getInt("generator-cooldown") * 20
+                            var genSpeed = p.getStats().currentStats[Stat.GENERATOR_SPEED] ?: 0.0
+                            if (genSpeed == 0.0) player.genTicks = baseSpeed;
+                            else player.genTicks = ceil(baseSpeed.toDouble() * ( 100 / genSpeed)).toInt()
+                            if (player.genTicks < 1) player.genTicks = 1
+                            waitFor(1)
+                        }
+                        player.genTicks = player.genTicks - 1;
                     }
                 }
             }
-        }, 0, dataStore.config.getInt("generator-cooldown").toLong() * 20)
+        }, 0, 1)
+
 
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, {
             Bukkit.getScheduler().schedule(this) {
@@ -152,20 +149,6 @@ class TransmitGenerators : JavaPlugin() {
         for (player in Bukkit.getOnlinePlayers()) {
             dataStore.savePlayer(player)
         }
-    }
-
-    fun disableDependency() {
-        this.logger.severe("\n" +
-                "\n" +
-                " _____                       _ _      _____                     _               \n" +
-                "|_   _|___ ___ ___ ___ _____|_| |_   |   __|___ ___ ___ ___ ___| |_ ___ ___ ___ \n" +
-                "  | | |  _| .'|   |_ -|     | |  _|  |  |  | -_|   | -_|  _| .'|  _| . |  _|_ -|\n" +
-                "  |_| |_| |__,|_|_|___|_|_|_|_|_|    |_____|___|_|_|___|_| |__,|_| |___|_| |___|\n" +
-                "\n -" +
-                "\n >>> Plugin cannot be enabled due to missing dependency [ Vault ] or [ Vault Economy Manager ]" +
-                "\n -")
-        Bukkit.getPluginManager().disablePlugin(this);
-        return
     }
 
 

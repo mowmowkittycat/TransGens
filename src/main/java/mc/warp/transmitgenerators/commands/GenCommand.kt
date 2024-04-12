@@ -1,10 +1,13 @@
 package mc.warp.transmitgenerators.commands
 
+import com.idlegens.idlecore.gui.InventoryManager.openInventory
+import com.idlegens.idlecore.stats.StatGUI
 import de.tr7zw.nbtapi.NBTBlock
 import mc.warp.transmitgenerators.Generator
 import mc.warp.transmitgenerators.TransmitGenerators
 import mc.warp.transmitgenerators.TransmitGenerators.Companion.getDataStore
 import mc.warp.transmitgenerators.guis.GenList
+import mc.warp.transmitgenerators.guis.GenUpgradeGUI
 import mc.warp.transmitgenerators.type.WarpPlayer
 import mc.warp.transmitgenerators.utils.Format.sendText
 import mc.warp.transmitgenerators.utils.Messages.getLangMessage
@@ -226,6 +229,11 @@ class GenCommand : CommandExecutor {
                 if (player is Player) {
                     var genList = GenList()
                     genList.show(player)
+                }
+            }
+            "upgrade" -> {
+                if (player is Player) {
+                    player.openInventory(GenUpgradeGUI(player))
                 }
             }
             "reload" -> {

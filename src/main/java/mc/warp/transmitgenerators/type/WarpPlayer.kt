@@ -22,6 +22,7 @@ class WarpPlayer {
     @SerializedName("Gens") var placedGens: HashMap<String, ArrayList<Location>>
     @Transient var canUpgrade: Boolean = true;
     @Transient var ephemeralBlocks: HashMap<Location, Boolean>;
+    @Transient var genTicks = 0;
 
     constructor(player: Player) {
         this.UUID = player.uniqueId

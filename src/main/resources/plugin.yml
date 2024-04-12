@@ -2,9 +2,9 @@ name: TransmitGenerators
 version: '${project.version}'
 main: mc.warp.transmitgenerators.TransmitGenerators
 api-version: 1.17
-authors: [ MrEnxo ]
-description: A Minehut Style Generator Plugin created by MrEnxo (Open-Source)
-depend: [ Vault ]
+authors: [ mowmowkittycar ]
+description: A Minehut Style Generator Plugin created by mowmowkittycar
+depend: [ IdleCore ]
 softdepend: [ PlaceholderAPI ]
 commands:
   TransmitGen:

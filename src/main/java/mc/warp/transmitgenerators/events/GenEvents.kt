@@ -1,5 +1,7 @@
 package mc.warp.transmitgenerators.events
 
+import com.idlegens.idlecore.NumberFormat
+import com.idlegens.idlecore.player.PlayerManager
 import de.tr7zw.nbtapi.NBTBlock
 import de.tr7zw.nbtapi.NBTCompound
 import de.tr7zw.nbtapi.NBTItem
@@ -7,6 +9,7 @@ import mc.warp.transmitgenerators.TransmitGenerators
 import mc.warp.transmitgenerators.TransmitGenerators.Companion.getDataStore
 import mc.warp.transmitgenerators.utils.Format
 import mc.warp.transmitgenerators.utils.Format.formatValue
+import mc.warp.transmitgenerators.utils.Format.formater
 import mc.warp.transmitgenerators.utils.Format.sendText
 import mc.warp.transmitgenerators.utils.Format.sendTitle
 import mc.warp.transmitgenerators.utils.Format.text
@@ -14,6 +17,7 @@ import mc.warp.transmitgenerators.utils.Messages.getLangMessage
 import mc.warp.transmitgenerators.utils.Messages.playSound
 import mc.warp.transmitgenerators.utils.scheduler.schedule
 import org.bukkit.Bukkit
+import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.OfflinePlayer
 import org.bukkit.block.Block
@@ -31,13 +35,13 @@ import org.bukkit.event.player.PlayerQuitEvent
 import kotlin.reflect.typeOf
 
 
-class GenEvents: Listener {
+object GenEvents: Listener {
 
     @EventHandler
     fun onGenPlace(e: BlockPlaceEvent) {
+        var tool = e.itemInHand
         var player = e.player;
         var playerData = getDataStore().getPlayer(player) ?: return
-        var tool = player.inventory.itemInMainHand
         if (tool.type == Material.AIR || tool == null) {
             e.isCancelled = true
             return
@@ -52,24 +56,25 @@ class GenEvents: Listener {
             sendTitle(
                 player,
                 getLangMessage("gen.error.maxGenSlots.title"),
-                getLangMessage("gen.error.maxGenSlots.subtitle", playerData.maxGenSlots.toString()),
+                getLangMessage("gen.error.maxGenSlots.subtitle",
+                    playerData.maxGenSlots.toString()),
                 200L,
                 200L,
                 200L
             )
 
+
         }
 
         Bukkit.getScheduler().schedule(TransmitGenerators.getInstance()) {
 
-            var tool = player.inventory.itemInMainHand
             var nbt = NBTItem(tool).getCompound("TransmitNBT")
 
             if (!generatorCheck(nbt, player)) return@schedule
 
 
             var playerData = getDataStore().getPlayer(player) ?: return@schedule
-            var generator = getDataStore().getGenerator(nbt.getString("generator")) ?: return@schedule
+            var generator = getDataStore().getGenerator(nbt!!.getString("generator")) ?: return@schedule
             waitFor(1)
 
             if (e.isCancelled) return@schedule
@@ -84,7 +89,9 @@ class GenEvents: Listener {
             sendTitle(
                 player,
                 getLangMessage("gen.message.placeGen.title"),
-                getLangMessage("gen.message.placeGen.subtitle", (playerData.placedGenSlots + 1).toString(), playerData.maxGenSlots.toString()),
+                getLangMessage("gen.message.placeGen.subtitle",
+                    (playerData.placedGenSlots + 1).toString(),
+                    playerData.maxGenSlots.toString()),
                 200L,
                 200L,
                 200L
@@ -125,17 +132,24 @@ class GenEvents: Listener {
             e.isCancelled = true
             return
         }
-        var generator = getDataStore().getGenerator(nbt.getString("generator")) ?: return
+        var generator = getDataStore().getGenerator(nbt!!.getString("generator")) ?: return
 
         var gens = playerData.placedGens.getOrPut(generator.id) { ArrayList() }
 
 
         if (gens.contains(block.location)) {
             playSound(player, "gen.sound.breakGen")
-            sendTitle(player, getLangMessage("gen.message.breakGen.title"),getLangMessage("gen.message.breakGen.subtitle", (playerData.placedGenSlots  - 1).toString(),playerData.maxGenSlots.toString()), 200L, 200L, 200L)
+            sendTitle(player,
+                getLangMessage("gen.message.breakGen.title"),
+                getLangMessage("gen.message.breakGen.subtitle",
+                    (playerData.placedGenSlots  - 1).toString(),
+                    playerData.maxGenSlots.toString()),
+                200L,
+                200L,
+                200L)
             gens.remove(block.location)
             player.inventory.addItem(generator.getBlock())
-            playerData.ephemeralBlocks.put(block.location, true);
+            playerData.ephemeralBlocks[block.location] = true;
             block.type = Material.AIR
 
             playerData.placedGenSlots--;
@@ -158,10 +172,15 @@ class GenEvents: Listener {
         var nbt = NBTBlock(block).data.getCompound("TransmitNBT")
 
         if (!generatorCheck(nbt, player)) return
-        if (player.isSneaking == false) {
+        if (!player.isSneaking) {
             e.isCancelled = true
             playSound(player, "gen.error.sneak")
-            sendTitle(player, getLangMessage("gen.error.sneak.title"),getLangMessage("gen.error.sneak.subtitle"), 200L, 200L, 200L)
+            sendTitle(player,
+                getLangMessage("gen.error.sneak.title"),
+                getLangMessage("gen.error.sneak.subtitle"),
+                200L,
+                200L,
+                200L)
             return
         }
 
@@ -178,10 +197,71 @@ class GenEvents: Listener {
         if (nbt == null) return false
         if (nbt.getString("owner") != player.uniqueId.toString()) {
             playSound(player, "gen.error.permission")
-            sendTitle(player, getLangMessage("gen.error.permission.title"),getLangMessage("gen.error.permission.subtitle"), 200L, 200L, 200L)
+            sendTitle(player,
+                getLangMessage("gen.error.permission.title"),
+                getLangMessage("gen.error.permission.subtitle"),
+                200L,
+                200L,
+                200L)
             return false
         }
         return true
+    }
+
+    fun upgradeGenerator(player: Player, location: Location, sendMessages: Boolean = true, event: Cancellable? = null) {
+        var block = location.block ?: return
+        var nbt = NBTBlock(block).data.getCompound("TransmitNBT")
+
+        if (!generatorCheck(nbt, player)) return
+        if (!generatorPermissionCheck(nbt, player)) return
+        var playerData = getDataStore().getPlayer(player) ?: return
+        var generator = getDataStore().getGenerator(nbt!!.getString("generator")) ?: return
+        var upgrade = getDataStore().getGenerator(generator.upgrade)
+
+
+        if (upgrade == null) {
+            if (sendMessages) playSound(player, "gen.error.maxGenLevel")
+            if (sendMessages) sendTitle(player,
+                getLangMessage("gen.error.maxGenLevel.title"),
+                getLangMessage("gen.error.maxGenLevel.subtitle"),
+                200L,
+                200L,
+                200L)
+            if (event != null) event.isCancelled = true
+            return
+        }
+
+        if (PlayerManager.getPlayerData(player).coins < generator.price.toDouble()) {
+            if (sendMessages) playSound(player, "gen.error.poor")
+            if (sendMessages) sendTitle(player,
+                getLangMessage("gen.error.poor.title"),
+                getLangMessage("gen.error.poor.subtitle",
+                    NumberFormat.bigFormat(PlayerManager.getPlayerData(player).coins ?: 0.0),
+                    NumberFormat.bigFormat(generator.price.toDouble())),
+                200L,
+                200L,
+                500L)
+            if (event != null) event.isCancelled = true
+            return
+        }
+        PlayerManager.getPlayerData(player).coins -= generator.price.toDouble()
+        block.type = upgrade.getBlock().type
+        NBTBlock(block).data.getCompound("TransmitNBT")!!.setString("generator", upgrade.id);
+        if (sendMessages) playSound(player, "gen.sound.upgradeGen")
+        if (sendMessages) sendTitle(player,
+            getLangMessage("gen.message.upgradeGen.title"),
+            getLangMessage("gen.message.upgradeGen.subtitle",
+                generator.id,
+                upgrade.id),
+            200L,
+            200L,
+            200L)
+
+        var gens = playerData.placedGens.getOrPut(generator.id) { ArrayList() }
+        var upgradeGens = playerData.placedGens.getOrPut(upgrade.id) { ArrayList() }
+        gens.remove(block.location)
+        upgradeGens.add(block.location)
+
     }
 
     @EventHandler
@@ -190,11 +270,9 @@ class GenEvents: Listener {
         if (action != Action.RIGHT_CLICK_BLOCK) return
         var player = e.player
         var tool = player.inventory.itemInMainHand
-        var block = e.clickedBlock ?: return
-        var nbt = NBTBlock(block).data.getCompound("TransmitNBT")
+        var playerData = getDataStore().getPlayer(player) ?: return
 
 
-        if (!generatorCheck(nbt, player)) return
         if (!player.isSneaking) return
         if (tool.type != Material.AIR) {
                 var toolNbt = NBTItem(tool).getCompound("TransmitNBT")
@@ -203,11 +281,7 @@ class GenEvents: Listener {
                 }
         }
         e.isCancelled = true
-        if (!generatorPermissionCheck(nbt, player)) return
 
-        var playerData = getDataStore().getPlayer(player) ?: return
-        var generator = getDataStore().getGenerator(nbt.getString("generator")) ?: return
-        var upgrade = getDataStore().getGenerator(generator.upgrade)
         if (!playerData.canUpgrade) return
         playerData.canUpgrade = false
         Bukkit.getScheduler().schedule(TransmitGenerators.getInstance()) {
@@ -215,31 +289,8 @@ class GenEvents: Listener {
             playerData.canUpgrade = true
         }
 
-        if (upgrade == null) {
-            playSound(player, "gen.error.maxGenLevel")
-            sendTitle(player, getLangMessage("gen.error.maxGenLevel.title"),getLangMessage("gen.error.maxGenLevel.subtitle"), 200L, 200L, 200L)
-            e.isCancelled = true
-            return
-        }
 
-        if (TransmitGenerators.econ.getBalance(player) < generator.price.toDouble()) {
-            playSound(player, "gen.error.poor")
-            sendTitle(player, getLangMessage("gen.error.poor.title"),getLangMessage("gen.error.poor.subtitle",formatValue(TransmitGenerators.econ.getBalance(player)), formatValue(generator.price.toDouble())), 200L, 200L, 500L)
-            e.isCancelled = true
-            return
-        }
-        TransmitGenerators.econ.withdrawPlayer(player, generator.price.toDouble())
-
-        playerData.canUpgrade = false
-        block.type = upgrade.getBlock().type
-        NBTBlock(block).data.getCompound("TransmitNBT").setString("generator", upgrade.id);
-        playSound(player, "gen.sound.upgradeGen")
-        sendTitle(player, getLangMessage("gen.message.upgradeGen.title"),getLangMessage("gen.message.upgradeGen.subtitle", generator.id, upgrade.id), 200L, 200L, 200L)
-
-        var gens = playerData.placedGens.getOrPut(generator.id) { ArrayList() }
-        var upgradeGens = playerData.placedGens.getOrPut(upgrade.id) { ArrayList() }
-        gens.remove(block.location)
-        upgradeGens.add(block.location)
+        upgradeGenerator(player, e.clickedBlock!!.location,true , e)
 
 
     }

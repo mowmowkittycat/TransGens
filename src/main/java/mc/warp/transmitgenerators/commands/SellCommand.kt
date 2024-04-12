@@ -1,5 +1,7 @@
 package mc.warp.transmitgenerators.commands
 
+import com.idlegens.idlecore.IdleCore
+import com.idlegens.idlecore.player.PlayerManager
 import de.tr7zw.nbtapi.NBTItem
 import mc.warp.transmitgenerators.TransmitGenerators
 import mc.warp.transmitgenerators.utils.Format
@@ -36,7 +38,7 @@ class SellCommand : Command {
             Format.sendTitle(player,Messages.getLangMessage("command.sell.success.title"),Messages.getLangMessage("command.sell.success.subtitle", amount.toString()))
             Messages.playSound(player, "command.success")
 
-            TransmitGenerators.econ.depositPlayer(player, amount.toDouble())
+            PlayerManager.getPlayerData(player).coins += amount.toDouble()
 
 
 

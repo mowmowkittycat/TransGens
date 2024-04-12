@@ -12,6 +12,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
 import net.kyori.adventure.text.minimessage.tag.standard.StandardTags
 import net.kyori.adventure.title.Title
+import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import java.text.DecimalFormat
@@ -53,26 +54,26 @@ object Format {
 
 
     fun sendActionBar(player: Player, string: String) {
-        TransmitGenerators.adventure.player(player).sendActionBar(formater.deserialize(string))
+        player.sendActionBar(formater.deserialize(string))
     }
 
 
     fun sendTitle(player: Player, mainTitle: String) {
         var title = Title.title(formater.deserialize(mainTitle),Component.empty());
 
-        TransmitGenerators.adventure.player(player).showTitle(title)
+        player.showTitle(title)
     }
     fun sendTitle(player: Player, mainTitle: String, FadeIn: Long, FadeOut: Long) {
         val times = Title.Times.times(Duration.ofMillis(FadeIn), Duration.ofMillis(1000), Duration.ofMillis(FadeOut))
         var title = Title.title(formater.deserialize(mainTitle),Component.empty(), times);
 
-        TransmitGenerators.adventure.player(player).showTitle(title)
+        player.showTitle(title)
     }
     fun sendTitle(player: Player, mainTitle: String, FadeIn: Long, FadeOut: Long, duration: Long) {
         val times = Title.Times.times(Duration.ofMillis(FadeIn), Duration.ofMillis(duration), Duration.ofMillis(FadeOut))
         var title = Title.title(formater.deserialize(mainTitle),Component.empty(), times);
 
-        TransmitGenerators.adventure.player(player).showTitle(title)
+        player.showTitle(title)
     }
 
 
@@ -80,19 +81,19 @@ object Format {
     fun sendTitle(player: Player, mainTitle: String, subTitle: String) {
         var title = Title.title(formater.deserialize(mainTitle),formater.deserialize(subTitle));
 
-        TransmitGenerators.adventure.player(player).showTitle(title)
+        player.showTitle(title)
     }
     fun sendTitle(player: Player, mainTitle: String, subTitle: String, FadeIn: Long, FadeOut: Long) {
         val times = Title.Times.times(Duration.ofMillis(FadeIn), Duration.ofMillis(1000), Duration.ofMillis(FadeOut))
         var title = Title.title(formater.deserialize(mainTitle),formater.deserialize(subTitle), times);
 
-        TransmitGenerators.adventure.player(player).showTitle(title)
+        player.showTitle(title)
     }
     fun sendTitle(player: Player, mainTitle: String,subTitle: String, FadeIn: Long, FadeOut: Long, duration: Long) {
         val times = Title.Times.times(Duration.ofMillis(FadeIn), Duration.ofMillis(duration), Duration.ofMillis(FadeOut))
         var title = Title.title(formater.deserialize(mainTitle),formater.deserialize(subTitle), times);
 
-        TransmitGenerators.adventure.player(player).showTitle(title)
+        player.showTitle(title)
     }
 
     fun formatValue(value: Double): String {
@@ -112,20 +113,20 @@ object Format {
     fun sendText(player: Player, string: Component?) {
         if (string == null) return
 
-        TransmitGenerators.adventure.player(player).sendMessage(string)
+        player.sendMessage(string)
     }
     fun sendText(player: CommandSender, string: Component?) {
         if (string == null) return
         if (player is Player) {
-            TransmitGenerators.adventure.player(player).sendMessage(string)
+            player.sendMessage(string)
         } else{
-            TransmitGenerators.adventure.console().sendMessage(string)
+            player.sendMessage(string)
         }
     }
     fun sendActionBar(player: Player, string: Component?) {
         if (string == null) return
 
-        TransmitGenerators.adventure.player(player).sendActionBar(string)
+        player.sendActionBar(string)
     }
 
 
@@ -134,7 +135,7 @@ object Format {
 
         var title = Title.title(mainTitle,Component.empty());
 
-        TransmitGenerators.adventure.player(player).showTitle(title)
+        player.showTitle(title)
     }
     fun sendTitle(player: Player, mainTitle: Component?, FadeIn: Long, FadeOut: Long) {
         if (mainTitle == null) return
@@ -142,7 +143,7 @@ object Format {
         val times = Title.Times.times(Duration.ofMillis(FadeIn), Duration.ofMillis(1000), Duration.ofMillis(FadeOut))
         var title = Title.title(mainTitle,Component.empty(), times);
 
-        TransmitGenerators.adventure.player(player).showTitle(title)
+        player.showTitle(title)
     }
     fun sendTitle(player: Player, mainTitle: Component?, FadeIn: Long, FadeOut: Long, duration: Long) {
         if (mainTitle == null) return
@@ -150,7 +151,7 @@ object Format {
         val times = Title.Times.times(Duration.ofMillis(FadeIn), Duration.ofMillis(duration), Duration.ofMillis(FadeOut))
         var title = Title.title(mainTitle,Component.empty(), times);
 
-        TransmitGenerators.adventure.player(player).showTitle(title)
+        player.showTitle(title)
     }
 
 
@@ -163,7 +164,7 @@ object Format {
 
         var title = Title.title(mainTitle,subTitle);
 
-        TransmitGenerators.adventure.player(player).showTitle(title)
+        player.showTitle(title)
     }
     fun sendTitle(player: Player, mainTitle: Component?, subTitle: Component?, FadeIn: Long, FadeOut: Long) {
         var subTitle = subTitle
@@ -174,7 +175,7 @@ object Format {
         val times = Title.Times.times(Duration.ofMillis(FadeIn), Duration.ofMillis(1000), Duration.ofMillis(FadeOut))
         var title = Title.title(mainTitle,subTitle, times);
 
-        TransmitGenerators.adventure.player(player).showTitle(title)
+        player.showTitle(title)
     }
     fun sendTitle(player: Player, mainTitle: Component?,subTitle: Component?, FadeIn: Long, FadeOut: Long, duration: Long) {
         var subTitle = subTitle
@@ -185,7 +186,7 @@ object Format {
         val times = Title.Times.times(Duration.ofMillis(FadeIn), Duration.ofMillis(duration), Duration.ofMillis(FadeOut))
         var title = Title.title(mainTitle,subTitle, times);
 
-        TransmitGenerators.adventure.player(player).showTitle(title)
+        player.showTitle(title)
     }
 
 
